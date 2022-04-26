@@ -7,7 +7,7 @@ class App extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: "log me  app",
+      title: "Log Me In",
       home: SafeArea(
         child: Scaffold(body: LoginScreen()),
       ),

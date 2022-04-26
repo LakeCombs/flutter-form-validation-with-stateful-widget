@@ -1,85 +1,67 @@
-// ignore_for_file: avoid_print
+import 'dart:async';
+import 'package:flutter/material.dart';
+import 'package:login_stateful/src/blocs/bloc.dart';
 
-import "package:flutter/material.dart";
-import 'package:login_stateful/src/mixins/validation_mixin.dart';
-
-class LoginScreen extends StatefulWidget {
+class LoginScreen extends StatelessWidget {
   const LoginScreen({Key? key}) : super(key: key);
 
   @override
-  State<LoginScreen> createState() => _LoginScreenState();
-}
-
-class _LoginScreenState extends State<LoginScreen> with ValidationMixin {
-  // create an instance of the global key state
-  final formKey = GlobalKey<FormState>();
-
-  String email = "";
-  String password = "";
-
-  @override
   Widget build(BuildContext context) {
+    bloc.changeEmail("Lakecombs@gmail.com");
+
     return Container(
       margin: EdgeInsets.all(20.0),
-      child: Form(
-        //reference the key to the formKey we created in the GlobalKey
-        key: formKey,
-        child: Column(
-          children: [
-            emailField(),
-            passwordField(),
-            Container(
-              margin: EdgeInsets.only(top: 25.0),
-            ),
-            submitButton(),
-          ],
-        ),
+      child: Column(
+        children: [
+          emailField(),
+          passwordField(),
+          Container(
+            margin: EdgeInsets.only(bottom: 25.0),
+          ),
+          submitButton(),
+        ],
       ),
     );
   }
 
+//in this funtion you
   Widget emailField() {
-    return TextFormField(
-      keyboardType: TextInputType.emailAddress,
-      decoration: InputDecoration(
-        labelText: "Email Address",
-        hintText: "email@email.com",
-      ),
-      validator: validateEmail,
-      onSaved: (String? value) {
-        email = value!;
+    return StreamBuilder(
+      stream: bloc.email,
+      builder: (context, snapshot) {
+        return TextField(
+          onChanged: bloc.changeEmail,
+          keyboardType: TextInputType.emailAddress,
+          decoration: InputDecoration(
+            hintText: "email@email.com",
+            labelText: "email address",
+            errorText: snapshot.error.toString(),
+          ),
+        );
       },
     );
   }
 
-  //the ! is the null check and it is used for null safety on
-  //method that don't support null
-
   Widget passwordField() {
-    return TextFormField(
-      obscureText: true,
-      decoration: InputDecoration(
-        labelText: "Password",
-        hintText: "Password",
-      ),
-      validator: validatePassword,
-      onSaved: (String? value) {
-        password = value!;
+    return StreamBuilder(
+      stream: bloc.password,
+      builder: (context, snapshot) {
+        return TextField(
+          obscureText: true,
+          decoration: InputDecoration(
+            hintText: "password",
+            labelText: "Password",
+            errorText: snapshot.error.toString(),
+          ),
+        );
       },
     );
   }
 
   Widget submitButton() {
     return ElevatedButton(
-      style: ButtonStyle(),
-      onPressed: () {
-        if (formKey.currentState!.validate()) {
-          formKey.currentState!.save();
-          // ignore: unnecessary_brace_in_string_interps
-          print("Time to post ${email}  and ${password} to the api");
-        }
-      },
-      child: Text("Submit"),
+      onPressed: () {},
+      child: Text("Login"),
     );
   }
 }
